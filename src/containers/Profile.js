@@ -47,7 +47,7 @@ const Profile = ({ history, match }) => {
             setProfile(getProfile(match.params.id));
             setLoading(false);
         }
-    }, [profiles, profile, fetchProfiles, setProfile, getProfile, match.params.id, setLoading]);
+    }, [profiles, fetchProfiles, setProfile, getProfile, match.params.id, setLoading]);
 
     const goBack = () => {
         history.push("/");
