@@ -4,7 +4,7 @@ import { ProfileContext } from '../context/profile-context';
 import ProfileControls from '../components/ProfileControls';
 import ProfileList from '../components/ProfileList';
 
-const Profiles = props => {
+const Profiles = () => {
     const { fetchProfiles } = useContext(ProfileContext);
 
     useEffect(() => {

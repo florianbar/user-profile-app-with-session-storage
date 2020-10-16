@@ -34,19 +34,23 @@ const StyledProfile = styled.div`
     } 
 `;
 
-const Profile = props => {
+const Profile = ({ history, match }) => {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const { getProfile } = useContext(ProfileContext);
+    const { profiles, getProfile, fetchProfiles } = useContext(ProfileContext);
 
     useEffect(() => {
-        setProfile(getProfile(props.match.params.id));
-        setLoading(false);
-    }, [setProfile, setLoading, getProfile, props.match.params.id]);
+        if (!profiles) {
+            fetchProfiles();
+        } else {
+            setProfile(getProfile(match.params.id));
+            setLoading(false);
+        }
+    }, [profiles, profile, fetchProfiles, setProfile, getProfile, match.params.id, setLoading]);
 
     const goBack = () => {
-        props.history.push("/");
+        history.push("/");
     };
 
     let profileContent = "Loading profile...";
@@ -98,7 +102,7 @@ const Profile = props => {
         );
     }
 
-    return !loading && !profile ? <Redirect to="/" /> : profileContent;
+    return (!profile && !loading) ? <Redirect to="/" /> : profileContent;
 }
 
 export default Profile;

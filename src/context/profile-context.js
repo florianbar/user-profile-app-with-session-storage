@@ -2,7 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
 export const ProfileContext = React.createContext({
-    filteredProfiles: [],
+    profiles: null,
+    filteredProfiles: null,
     searchValue: "",
     selectedGender: "",
     sortOrder: "",
@@ -21,16 +22,24 @@ export default props => {
     const [sortOrder, setSortOrder] = useState("asc");
 
     const fetchProfiles = useCallback(() => {
-        if (profiles === null) {
+        if (sessionStorage.getItem("profiles")) {
+            console.log("Fetch data from session");
+            const sessionProfiles = JSON.parse(sessionStorage.getItem("profiles"));
+            setProfiles(sessionProfiles);
+        } 
+        else {
+            console.log("Fetch data from api endpoint");
             axios.get(" https://randomuser.me/api/?results=20")
                 .then(response => {
-                    setProfiles(response.data.results);
+                    const profiles = response.data.results;
+                    sessionStorage.setItem("profiles", JSON.stringify(profiles))
+                    setProfiles(profiles);
                 })
                 .catch(error => {
                     console.log(error);
                 });
         }
-    }, [profiles, setProfiles]);
+    }, [setProfiles]);
 
     const getProfile = id => {
         if (profiles) {
@@ -91,6 +100,7 @@ export default props => {
 
     return (
         <ProfileContext.Provider value={{
+            profiles: profiles,
             filteredProfiles: filteredProfiles,
             searchValue: searchValue,
             selectedGender: selectedGender,
